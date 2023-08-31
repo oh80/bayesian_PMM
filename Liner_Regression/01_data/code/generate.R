@@ -2,7 +2,7 @@ main <- function(){
   #set params
   set.seed(428)
   beta <- seq(1,10,by=1)
-  sigma <- 0.3
+  sigma <- 0.5
   N = 1000
   
   #generate params at random
@@ -13,8 +13,8 @@ main <- function(){
   X <- generate_x(N, mu_x, cov_x)
   Y <- generate_y(X, beta, sigma)
   
-  lm <- lm(Y$Y~X$x1+X$x2+X$x3+X$x4+X$x5+X$x6+X$x7+X$x8+X$x9+X$x10)
-  summary(lm)
+  #save_data
+  save(X,Y)
 }
 
 
@@ -61,4 +61,12 @@ generate_y <- function(X, beta, sigma){
 }
 
 
+save <- function(X,Y){
+  merge_data <- X |> dplyr::bind_cols(Y)
+  path <- here::here("Liner_regression","01_data","data","row_data.obj")
+  saveRDS(merge_data, path)
+}
+
+
 main()
+
