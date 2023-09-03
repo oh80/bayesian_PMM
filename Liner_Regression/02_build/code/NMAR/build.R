@@ -15,7 +15,6 @@ main <- function(){
 
 
 add_noise <- function(data){
-  N = length(data$Y)
   for (j in 1:10) {
     set.seed(j)
     col_name <- paste0("x",j,"_noise")
