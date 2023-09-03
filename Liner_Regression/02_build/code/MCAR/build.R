@@ -7,17 +7,17 @@ main <- function(){
   set.seed(428)
   missing_rate <- 0.5
   
-  #MCAR
+  #get missing data
   missing_indicater <- get_index(raw_data, missing_rate)
-  data_MCAR <- get_MCAR(raw_data, missing_indicater)
-  return(data_MCAR)
-  
-  
+  missing_data <- get_missing_data(raw_data, missing_indicater)
+
+  #save data
+  save(missing_data, missing_rate)
 }
 
 
-get_index <- function(raw_data, missing_rate){
-  N <- length(raw_data$Y)
+get_index <- function(data, missing_rate){
+  N <- length(data$Y)
   missing_indicater <- seq(0, 10, by = 1)
   prob <- c(1-missing_rate, rep(missing_rate/10, 10))
   output <- sample(missing_indicater, N, prob, replace = TRUE)
@@ -25,8 +25,8 @@ get_index <- function(raw_data, missing_rate){
 }
 
 
-get_MCAR <- function(raw_data, missing_indicater){
-  data <- raw_data |> dplyr::mutate("R" = missing_indicater)
+get_missing_data <- function(data, missing_indicater){
+  data <- data |> dplyr::mutate("R" = missing_indicater)
   for (i in 1:1000) {
     if(data[i,]$R >= 1){
       data[i,data[i,]$R] = NaN
@@ -36,6 +36,15 @@ get_MCAR <- function(raw_data, missing_indicater){
   return(output)
 }
 
+
+save <- function(missing_data, missing_rate){
+  file_name <- paste0("MCAR_",missing_rate,".obj")
+  path <- here::here("Liner_regression", "02_build","data", file_name)
+  saveRDS(missing_data, path)
+}
+
+
 main()
+
 
 
