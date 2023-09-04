@@ -15,9 +15,12 @@ main <- function(){
   sigma <- get_sigma(data)
   
   #imputation 
+  pseudo_complete_data <- multiple_imputation(data, coefficients, sigma, D)
   
+  #estimation
+  estimated_values <- esimate_each_data(pseudo_complete_data)
   
-  return()
+  return(estimated_values)
 }
 
 
@@ -65,18 +68,37 @@ get_single_imputation <- function(data, coefficients, sigma){
   return(output)
 }
 
-i <- get_single_imputation(data, coefs, sigma)
-sum(c[1] + c[2:11] * m1[1, 2:11])
+
+multiple_imputation <- function(data, coefficients, sigma, D){
+  output <- list()
+  for (d in 1:D) {
+    set.seed(d)
+    output[[d]] <- get_single_imputation(data, coefficients, sigma)
+  }
+  return(output)
+}
 
 
-main()
+esimate_each_data <- function(data_list){
+  D <- length(data_list)
+  output <- list()
+  for (d in 1:D) {
+    data <- data_list[[d]] |> dplyr::select(-R)
+    output[[d]] <- lm(formula = Y ~ ., data = data)
+  }
+  return(output)
+}
 
-m2  <- data |> dplyr::filter(R == 2)
-predict <- sum(coefs[1] * m2[, 2:11])
 
-m2[1, 2:11]
+values <- main()
 
-c <- coefs[[2]]
 
-c
-sum(c[2:11]* m1[1,2:11])
+values[[1]]
+values[[2]]
+
+path <- here::here("Liner_regression", "02_build","data", "MCAR_0.5.obj")
+data <- readRDS(path)
+
+c_data <- data |> dplyr::filter(R==0)|> dplyr::select(-R)
+lm(Y~., data=c_data)
+s
