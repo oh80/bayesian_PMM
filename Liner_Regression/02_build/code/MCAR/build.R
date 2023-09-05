@@ -5,7 +5,7 @@ main <- function(){
   
   #set params
   set.seed(428)
-  missing_rate <- 0.5
+  missing_rate <- 0.1
   
   #get missing data
   missing_indicater <- get_index(raw_data, missing_rate)

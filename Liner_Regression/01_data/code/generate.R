@@ -3,7 +3,7 @@ main <- function(){
   set.seed(428)
   beta <- seq(1,10,by=1)
   sigma <- 0.5
-  N = 1000
+  N = 10000
   
   #generate params at random
   mu_x <- get_mu()

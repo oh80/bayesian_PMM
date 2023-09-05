@@ -1,6 +1,6 @@
 main <- function(){
   #read_data
-  missing_rate <- 0.5
+  missing_rate <- 0.1
   missing_type <- "MCAR"
   file_name <- paste0(missing_type , "_", missing_rate, ".obj")
   path <- here::here("Liner_regression", "02_build","data", file_name)
@@ -62,7 +62,7 @@ get_single_imputation <- function(data, coefficients, sigma){
         predict <- sum(coeffcient[1] + coeffcient[2:11] * missing_data[i, 2:11])
         imputation[i] <- rnorm(n = 1, mean =predict, sd = unlist(sigma[j]) )
       }
-    missing_data <- missing_data |> dplyr::mutate("{missing_col}" := imputation)
+    missing_data <- missing_data |> dplyr::mutate("{missing_col}" := scale(imputation))
     output <- output |> dplyr::bind_rows(missing_data)
   }
   return(output)
@@ -92,13 +92,3 @@ esimate_each_data <- function(data_list){
 
 values <- main()
 
-
-values[[1]]
-values[[2]]
-
-path <- here::here("Liner_regression", "02_build","data", "MCAR_0.5.obj")
-data <- readRDS(path)
-
-c_data <- data |> dplyr::filter(R==0)|> dplyr::select(-R)
-lm(Y~., data=c_data)
-s
