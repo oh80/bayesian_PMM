@@ -20,7 +20,10 @@ main <- function(){
   #estimation
   estimated_values <- esimate_each_data(pseudo_complete_data)
   
-  return(estimated_values)
+  #combine each estimated values
+  estimate_result <- combine(estimated_values)
+  
+  return(estimate_result)
 }
 
 
@@ -84,11 +87,33 @@ esimate_each_data <- function(data_list){
   output <- list()
   for (d in 1:D) {
     data <- data_list[[d]] |> dplyr::select(-R)
-    output[[d]] <- lm(formula = Y ~ ., data = data)
+    output[[d]] <- estimatr::lm_robust(formula = Y ~ ., data = data,
+                                       se_type = "stata")
   }
   return(output)
 }
 
 
-values <- main()
+combine <- function(estimate_list){
+  D = length(estimate_list)
+  
+  combined_estimation <- rep(0,11)
+  for (d in 1:D) {
+    combined_estimation <- combined_estimation + estimate_list[[d]]$coefficients/D
+  }
+  
+  var <- rep(0,11)
+  for (d in 1:D) {
+    var <- var + 1/D * (estimate_list[[d]]$std.error)^2 + 
+      (1+1/D)*(1/(D-1))*(combined_estimation-estimate_list[[d]]$coefficients)^2
+  }
+  
+  output <- list()
+  output$estimation <- combined_estimation
+  output$var <- var
+  return(output)
+}
+
+
+results <- main()
 
