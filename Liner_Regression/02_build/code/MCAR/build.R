@@ -26,8 +26,9 @@ get_index <- function(data, missing_rate){
 
 
 get_missing_data <- function(data, missing_indicater){
+  N <- length(data$Y)
   data <- data |> dplyr::mutate("R" = missing_indicater)
-  for (i in 1:1000) {
+  for (i in 1:N) {
     if(data[i,]$R >= 1){
       data[i,data[i,]$R] = NaN
     }
@@ -45,6 +46,4 @@ save <- function(missing_data, missing_rate){
 
 
 main()
-
-
 
