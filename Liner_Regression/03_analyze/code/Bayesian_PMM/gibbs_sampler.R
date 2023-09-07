@@ -4,8 +4,8 @@ gibbs_sampler <- function(data, j, sample_size, beta_0, Sigma_0, sigma){
   missing_data <- data |> dplyr::filter(R == j) |> dplyr::select(-R)
   n <- length(missing_data$Y)
   missing_col <- paste0("x",j)
-  X_obs <- missing_data |> dplyr::select(-Y)
-  X_obs_matrix <- X_obs |> dplyr::select(-all_of(missing_col)) |> as.matrix()
+  X <- missing_data |> dplyr::select(-Y)
+  X_obs_matrix <- X |> dplyr::select(-all_of(missing_col)) |> as.matrix()
   Y <- missing_data |> dplyr::select(Y)|> as.matrix()
   
   #initial value set
@@ -26,7 +26,9 @@ gibbs_sampler <- function(data, j, sample_size, beta_0, Sigma_0, sigma){
   
   #gibbs sammpling
   for (i in 1:sample_size) {
-    X <- X_obs |> dplyr::mutate( "{missing_col}":= missing_value_sample[,j]) |> as.matrix()
+    
+    X[, j] <- missing_value_sample[1:n,i] 
+    X <- X |> as.matrix()
     X_square <- t(X) %*% X
 
     #neta posterior params
@@ -37,13 +39,18 @@ gibbs_sampler <- function(data, j, sample_size, beta_0, Sigma_0, sigma){
     beta_sample[1:10, i] <- mvtnorm::rmvnorm(n = 1, mean =  posterior_mean, sigma = solve(posterior_precision)) |> t()
 
     #missing value posterior params
-    posterior_var <- 1/prior_var +  beta_sample[j, i]/sigma
-    posterior_mean_X <- rep(posterior_var,n) * (prior_mean_X/prior_var + (rep(beta_sample[j,i],n) * as.vector(Y) + rep(beta_sample[j,i],n) * X_obs_matrix %*% beta_sample[-j,i])/sigma)
-
+    posterior_var <- 1/prior_var +  beta_sample[j, i]/sigma 
+    beta_obs <- beta[-j,i] |> as.matrix()
+    beta_mis <- beta[j,i]
+    coef_first_order_term <- prior_mean_X/prior_var +  rep(beta_mis/sigma, n) * (Y + X_obs_matrix%*%beta_obs)
+    posterior_mean_X <- rep(posterior_var, n) * coef_first_order_term
+    
     #sampling
-    missing_value_sample[1:n, i+1] <- mvtnorm::rmvnorm(n = 1, mean =  posterior_mean_X, sigma = posterior_var) |> t()
+    missing_value_sample[1:n, i+1]<- mvtnorm::rmvnorm(n = 1, mean =  posterior_mean_X, sigma = rep(posterior_var,n) *diag(n)) |> t()
+  
   }
-  return(missing_value_sample)
+    
+  return(beta_sample)
 }
 
 
@@ -51,6 +58,7 @@ gibbs_sampler <- function(data, j, sample_size, beta_0, Sigma_0, sigma){
 data <- readRDS("Liner_Regression/02_build/data/MCAR_0.1.obj")
 beta_0 <- get_OLS_extimater(data)
 sigma <- var(data$Y)
-Sigma_0 <- get_Sigma0(data, g = 10, sigma)
+Sigma_0 <- get_Sigma0(data, g = 1, sigma)
 
-missing_value_sample<- gibbs_sampler(data, j = 1, sample_size = 10, beta_0, Sigma_0, sigma)
+beta_sample <- gibbs_sampler(data, j = 1, sample_size = 3, beta_0, Sigma_0, sigma)
+
