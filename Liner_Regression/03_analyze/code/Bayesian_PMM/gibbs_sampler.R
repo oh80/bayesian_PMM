@@ -40,17 +40,16 @@ gibbs_sampler <- function(data, j, sample_size, beta_0, Sigma_0, sigma){
 
     #missing value posterior params
     posterior_var <- 1/prior_var +  beta_sample[j, i]/sigma 
-    beta_obs <- beta[-j,i] |> as.matrix()
-    beta_mis <- beta[j,i]
+    beta_obs <- beta_sample[-j,i] |> as.matrix()
+    beta_mis <- beta_sample[j,i]
     coef_first_order_term <- prior_mean_X/prior_var +  rep(beta_mis/sigma, n) * (Y + X_obs_matrix%*%beta_obs)
     posterior_mean_X <- rep(posterior_var, n) * coef_first_order_term
     
     #sampling
-    missing_value_sample[1:n, i+1]<- mvtnorm::rmvnorm(n = 1, mean =  posterior_mean_X, sigma = rep(posterior_var,n) *diag(n)) |> t()
-  
+    missing_value_sample[1:n, i+1]<- mvtnorm::rmvnorm(n = 1, mean =  posterior_mean_X, sigma = rep(posterior_var,n) *diag(n)) |> t() 
   }
     
-  return(beta_sample)
+  return(missing_value_sample)
 }
 
 
@@ -60,5 +59,6 @@ beta_0 <- get_OLS_extimater(data)
 sigma <- var(data$Y)
 Sigma_0 <- get_Sigma0(data, g = 1, sigma)
 
-beta_sample <- gibbs_sampler(data, j = 1, sample_size = 3, beta_0, Sigma_0, sigma)
+missing_sample <- gibbs_sampler(data, j = 1, sample_size = 100, beta_0, Sigma_0, sigma)
+
 
