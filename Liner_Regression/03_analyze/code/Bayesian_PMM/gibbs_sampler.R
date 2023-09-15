@@ -48,17 +48,12 @@ gibbs_sampler <- function(data, j, sample_size, beta_0, Sigma_0, sigma){
     #sampling
     missing_value_sample[1:n, i+1]<- mvtnorm::rmvnorm(n = 1, mean =  posterior_mean_X, sigma = rep(posterior_var,n) *diag(n)) |> t() 
   }
-    
-  return(missing_value_sample)
+  output <- list()
+  output$missing_value_sample <- missing_value_sample
+  output$beta_sample <- beta_sample
+  return(output)
 }
 
 
-
-data <- readRDS("Liner_Regression/02_build/data/MCAR_0.1.obj")
-beta_0 <- get_OLS_extimater(data)
-sigma <- var(data$Y)
-Sigma_0 <- get_Sigma0(data, g = 1, sigma)
-
-missing_sample <- gibbs_sampler(data, j = 1, sample_size = 100, beta_0, Sigma_0, sigma)
 
 
