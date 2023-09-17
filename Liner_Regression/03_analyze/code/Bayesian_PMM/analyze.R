@@ -4,7 +4,7 @@ main <- function(){
   source("Liner_Regression/03_analyze/code/Bayesian_PMM/gibbs_sampler.R")
   
   # read data 
-  missing_rate <- 0.1
+  missing_rate <- 0.5
   missing_type <- "MCAR"
   file_name <- paste0(missing_type , "_", missing_rate, ".obj")
   path <- here::here("Liner_regression", "02_build","data", file_name)
