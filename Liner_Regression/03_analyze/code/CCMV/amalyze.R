@@ -1,7 +1,7 @@
 main <- function(){
   #read_data
-  missing_rate <- 0.5
-  missing_type <- "MAR"
+  missing_rate <- 0.25
+  missing_type <- "NMAR"
   file_name <- paste0(missing_type , "_", missing_rate, ".obj")
   path <- here::here("Liner_regression", "02_build","data", file_name)
   data <- readRDS(path)
@@ -88,7 +88,7 @@ esimate_each_data <- function(data_list){
   output <- list()
   for (d in 1:D) {
     data <- data_list[[d]] |> dplyr::select(-R)
-    output[[d]] <- estimatr::lm_robust(formula = Y ~ ., data = data,
+    output[[d]] <- estimatr::lm_robust(formula = Y ~ . , data = data,
                                        se_type = "stata")
   }
   return(output)

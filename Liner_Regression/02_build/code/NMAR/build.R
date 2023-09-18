@@ -5,7 +5,7 @@ main <- function(){
   
   #set params
   set.seed(428)
-  missing_rate <- 0.1
+  missing_rate <- 0.25
   
   data_and_indicater <- raw_data |> add_noise() |> get_index(missing_rate)
   missing_data <- get_missing_data(data_and_indicater)
