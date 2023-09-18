@@ -17,7 +17,7 @@ main <- function(){
   beta_0 <- get_OLS_extimater(data)
   
   estimated_values <- compute_weighted_mean(weight, beta_mean, beta_0)
-  return(estimated_values)
+  return(beta_mean)
 }
 
 
@@ -57,4 +57,4 @@ compute_weighted_mean <- function(weight, beta_mean, beta_0){
   return(output)
 }
 
-estimate <- main()
+beta_mean <- main()

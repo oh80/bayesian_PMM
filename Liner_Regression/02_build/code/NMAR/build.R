@@ -5,7 +5,7 @@ main <- function(){
   
   #set params
   set.seed(428)
-  missing_rate <- 0.5
+  missing_rate <- 0.1
   
   data_and_indicater <- raw_data |> add_noise() |> get_index(missing_rate)
   missing_data <- get_missing_data(data_and_indicater)
@@ -15,8 +15,9 @@ main <- function(){
 
 
 add_noise <- function(data){
+  N <- length(data$Y)
   for (j in 1:10) {
-    set.seed(j)
+    set.seed
     col_name <- paste0("x",j,"_noise")
     data <- data |> dplyr::mutate("{col_name}" := data[,j] + rnorm(n = N, mean = 0, sd = 1))
   }

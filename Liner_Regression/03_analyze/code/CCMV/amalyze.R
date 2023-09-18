@@ -1,7 +1,7 @@
 main <- function(){
   #read_data
-  missing_rate <- 0.1
-  missing_type <- "MCAR"
+  missing_rate <- 0.5
+  missing_type <- "MAR"
   file_name <- paste0(missing_type , "_", missing_rate, ".obj")
   path <- here::here("Liner_regression", "02_build","data", file_name)
   data <- readRDS(path)
@@ -23,7 +23,8 @@ main <- function(){
   #combine each estimated values
   estimate_result <- combine(estimated_values)
   
-  return(estimate_result)
+  #save estimated values
+  save(estimate_result, file_name)
 }
 
 
@@ -115,5 +116,12 @@ combine <- function(estimate_list){
 }
 
 
-results <- main()
+
+save <- function(results, file_name){
+  path <- here::here("Liner_regression", "03_analyze","output", "CCMV", file_name)
+  saveRDS(results, path)
+}
+
+
+main()
 

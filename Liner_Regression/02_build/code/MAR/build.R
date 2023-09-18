@@ -5,12 +5,12 @@ main <- function(){
   
   #set params
   set.seed(428)
-  missing_rate <- 0.1
+  missing_rate <- 0.5
   
   data_and_indicater <- raw_data |> add_col() |> get_index(missing_rate)
   missing_data <- get_missing_data(data_and_indicater)
   
-  save(data_and_indicater, missing_rate)
+  save(missing_data, missing_rate)
 }
 
 
