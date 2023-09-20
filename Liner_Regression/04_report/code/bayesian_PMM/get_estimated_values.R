@@ -109,6 +109,6 @@ compute_standard_error <- function(weight, beta_var, beta_var_0){
   return(output)
 }
 
-se <- get_standard_error(0.1, "MCAR")
+se2 <- get_standard_error(0.1, "MCAR")
 
 
