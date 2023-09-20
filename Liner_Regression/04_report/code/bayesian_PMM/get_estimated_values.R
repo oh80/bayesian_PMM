@@ -1,7 +1,5 @@
-main <- function(){
+get_estimated_values <- function(missing_rate, missing_type){
   # read sample and data
-  missing_rate <- 0.5
-  missing_type <- "NMAR"
   file_name <- paste0(missing_type , "_", missing_rate, ".obj")
   path <- here::here("Liner_regression", "03_analyze","output", "bayesian_PMM", file_name)
   sample <- readRDS(path)
@@ -17,7 +15,7 @@ main <- function(){
   beta_0 <- get_OLS_extimater(data)
   
   estimated_values <- compute_weighted_mean(weight, beta_mean, beta_0)
-  return(beta_mean)
+  return(estimated_values)
 }
 
 
@@ -50,11 +48,11 @@ compute_weighted_mean <- function(weight, beta_mean, beta_0){
   col_names <- paste0("beta", seq(1,10,by=1))
   mean_matrix <- matrix(ncol = 10, nrow = 1)
   for (j in 1:10) {
-    mean_matrix[1,j] <- sum(beta_mean[,j] * weight[2:11]) +  beta0[j] * weight[1]
+    mean_matrix[1,j] <- sum(beta_mean[,j] * weight[2:11]) +  beta_0[j] * weight[1]
   }
   output <- mean_matrix |> as.data.frame() |> 
     magrittr::set_colnames(col_names)
   return(output)
 }
 
-beta_mean <- main()
+

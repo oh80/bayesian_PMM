@@ -2,7 +2,7 @@ main <- function(){
   library(ggplot2)
   # read sample
   missing_rate <- 0.1
-  missing_type <- "MCAR"
+  missing_type <- "MAR"
   file_name <- paste0(missing_type , "_", missing_rate, ".obj")
   path <- here::here("Liner_regression", "03_analyze","output", "bayesian_PMM", file_name)
   sample <- readRDS(path)
