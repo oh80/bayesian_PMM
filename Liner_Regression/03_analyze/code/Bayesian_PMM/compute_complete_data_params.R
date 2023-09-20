@@ -16,7 +16,6 @@ get_OLS_extimater <- function(data){
 get_Sigma0 <- function(data, g, sigma){
   complete_data <- data |> dplyr::filter(R == 0) |> dplyr::select(-R)
   X <- complete_data |> dplyr::select(-Y)
-  
   X <- as.matrix(X)
   X_t <- t(X)
   X_square <- X_t %*% X
@@ -28,12 +27,31 @@ get_Sigma0 <- function(data, g, sigma){
 
 get_ols_var <- function(data){
   complete_data <- data |> dplyr::filter(R == 0) |> dplyr::select(-R)
-  lm <- lm(Y~. -1, data = complete_data)
-  std <- coef(summary(lm))[,2]
-  var <- rep(0,10)
-  for (i in 1:10) {
-    var[i] <- std[i]^2
-  }
-  return(var)
+  X <- complete_data |> dplyr::select(-Y) |> as.matrix()
+  X_square <- t(X) %*% X
+  
+  beta_ols <- get_OLS_extimater(data)
+  X_beta <- X %*% beta_ols 
+  u <- Y -X_beta 
+  uu <- u*t(u)
+  sigma <- mean(uu[,1])
+  
+  cov <- sigma * solve(X_square)
+  output <- diag(cov)
+  return(output)
 }
 
+
+get_sigma  <- function(data){
+  complete_data <- data |> dplyr::filter(R == 0) |> dplyr::select(-R)
+  X <- complete_data |> dplyr::select(-Y) |> as.matrix()
+  X_square <- t(X) %*% X
+  
+  beta_ols <- get_OLS_extimater(data)
+  X_beta <- X %*% beta_ols 
+  u <- Y -X_beta 
+  uu <- u*t(u)
+  sigma <- mean(uu[,1])
+  
+  return(sigma)
+}

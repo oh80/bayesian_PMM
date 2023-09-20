@@ -12,14 +12,14 @@ main <- function(){
   
   # set hyper parameter
   g <- 1
-  sigma_y <- var(data$Y)
+  sigma <- get_sigma(data)
   sample_size <- 1000
   
   beta_0 <- get_OLS_extimater(data)
-  sigma_0 <- get_Sigma0(data, g, sigma_y)
+  sigma_0 <- get_Sigma0(data, g, sigma)
   
   # generate sample
-  sample <- generate_sample(data, sample_size, beta_0, sigma_0, sigma_y)
+  sample <- generate_sample(data, sample_size, beta_0, sigma_0, sigma)
   
   # save sample
   save(sample, file_name)
