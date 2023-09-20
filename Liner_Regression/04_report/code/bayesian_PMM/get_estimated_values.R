@@ -15,6 +15,7 @@ get_estimated_values <- function(missing_rate, missing_type){
   beta_0 <- get_OLS_extimater(data)
   
   estimated_values <- compute_weighted_mean(weight, beta_mean, beta_0)
+  
   return(estimated_values)
 }
 
@@ -54,5 +55,60 @@ compute_weighted_mean <- function(weight, beta_mean, beta_0){
     magrittr::set_colnames(col_names)
   return(output)
 }
+
+
+get_standard_error <- function(missing_rate, missing_type){
+  # read sample and data
+  file_name <- paste0(missing_type , "_", missing_rate, ".obj")
+  path <- here::here("Liner_regression", "03_analyze","output", "bayesian_PMM", file_name)
+  sample <- readRDS(path)
+  
+  
+  path <- here::here("Liner_regression", "02_build","data", file_name)
+  data <- readRDS(path)
+  
+  source("Liner_Regression/03_analyze/code/Bayesian_PMM/compute_complete_data_params.R")
+  
+  #get standard error
+  weight <- get_weight(data)
+  beta_var <- get_sample_var(sample)
+  beta_var_0 <- get_ols_var(data)
+  
+  standard_error <- compute_standard_error(weight, beta_var, beta_var_0)
+  
+  #save 
+  
+  return(standard_error)
+}
+
+
+get_sample_var <- function(sample){
+  col_names <- paste0("var_",seq(1, 10, by = 1))
+  se_matrix <- matrix(nrow = 10, ncol = 10)
+  for (j in 1:10) {
+    beta <- sample[[j]]$beta_sample |> t()
+    for (k in 1:10) {
+      se_matrix[j,k] <- var(beta[,k])
+    }
+  }
+  output <- se_matrix |> as.data.frame() |> 
+    magrittr::set_colnames(col_names)
+  return(output)
+}
+
+
+compute_standard_error <- function(weight, beta_var, beta_var_0){
+  weight <- weight$n
+  col_names <- paste0("se ", seq(1,10,by=1))
+  se_matrix <- matrix(ncol = 10, nrow = 1)
+  for (j in 1:10) {
+    se_matrix[1,j] <- sqrt(sum(beta_var[,j] + beta_var_0[j]) )
+  }
+  output <- se_matrix |> as.data.frame() |> 
+    magrittr::set_colnames(col_names)
+  return(output)
+}
+
+se <- get_standard_error(0.1, "MCAR")
 
 

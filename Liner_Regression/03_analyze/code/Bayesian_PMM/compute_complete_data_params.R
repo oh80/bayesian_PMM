@@ -26,3 +26,14 @@ get_Sigma0 <- function(data, g, sigma){
 }
 
 
+get_ols_var <- function(data){
+  complete_data <- data |> dplyr::filter(R == 0) |> dplyr::select(-R)
+  lm <- lm(Y~. -1, data = complete_data)
+  std <- coef(summary(lm))[,2]
+  var <- rep(0,10)
+  for (i in 1:10) {
+    var[i] <- std[i]^2
+  }
+  return(var)
+}
+
