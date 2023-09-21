@@ -5,7 +5,7 @@ main <- function(){
   
   #set params
   set.seed(428)
-  missing_rate <- 0.25
+  missing_rate <- 0.5
   
   data_and_indicater <- raw_data |> add_col() |> get_index(missing_rate)
   missing_data <- get_missing_data(data_and_indicater)
@@ -47,12 +47,15 @@ get_index <- function(data, missing_rate){
 
 get_missing_data <- function(data_and_indicater){
   col_names <- c(paste0("x", seq(1, 10 ,by=1)), "Y", "R")
-  output <- data_and_indicater |> dplyr::select(all_of(col_names))
-  for (i in 1:1000) {
-    if(output[i, ]$R >= 1){
-      output[i,output[i,]$R] = NaN
-    }
+  data <- data_and_indicater |> dplyr::select(all_of(col_names))
+  complete_data <- data |> dplyr::filter(R==0)
+  missing_data <- data |> dplyr::filter(R!=0)
+  n <- length(missing_data$Y)
+  for (i in 1:n) {
+    R <- missing_data[i,]$R
+    missing_data[i,R] <- NaN
   }
+  output <- complete_data |> dplyr::bind_rows(missing_data)
   return(output)
 }
 
