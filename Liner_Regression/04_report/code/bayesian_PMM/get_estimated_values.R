@@ -11,7 +11,8 @@ get_estimated_values <- function(missing_rate, missing_type){
   
   #get estimated values
   weight <- get_weight(data)
-  beta_mean <- get_sample_mean(sample)
+  burn_in <- 100
+  beta_mean <- get_sample_mean(sample, burn_in)
   beta_0 <- get_OLS_extimater(data)
   
   estimated_values <- compute_weighted_mean(weight, beta_mean, beta_0)
@@ -27,14 +28,15 @@ get_weight <- function(data){
 }
 
 
-get_sample_mean <- function(sample){
+get_sample_mean <- function(sample, burn_in){
   col_names <- paste0("beta", seq(1,10,by=1))
   mean_matrix <- matrix(ncol = 10, nrow = 10)
   for (j in 1:10) {
     sample_j <- sample[[j]]
     beta <- sample_j$beta_sample |> t()
+    N <- length(beta[,1])
     for (k in 1:10) {
-      mean_matrix[j,k] <- mean(beta[,k])
+      mean_matrix[j,k] <- mean(beta[burn_in:N,k])
     }
   }
   output <- mean_matrix |> as.data.frame() |> 
@@ -108,7 +110,3 @@ compute_standard_error <- function(weight, beta_var, beta_var_0){
     magrittr::set_colnames(col_names)
   return(output)
 }
-
-se2 <- get_standard_error(0.1, "MCAR")
-
-

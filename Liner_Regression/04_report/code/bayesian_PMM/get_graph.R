@@ -3,7 +3,7 @@ main <- function(){
   source("Liner_Regression/04_report/code/Bayesian_PMM/get_estimated_values.R")
   
   #get estimated values
-  missing_type <- "NMAR"
+  missing_type <- "MCAR"
   data <- store_estimated_values(missing_type)
   
   #get graph
@@ -44,7 +44,7 @@ get_graph <- function(missing_type ,data){
     geom_point() +
     scale_x_continuous(breaks = seq(1, 10, by = 1)) +
     scale_y_continuous(breaks = seq(1, 10, by = 1)) +
-    scale_color_manual(values = c("darkslategray2","deepskyblue2","dodgerblue4","coral2"  ))+
+    scale_color_manual(values = c("palegreen1","seagreen3","seagreen","coral2"  ))+
     geom_abline(intercept = 0,slope = 1,linetype=1,color= "coral2" ) +
     labs(title = missing_type) +
     ylab("beta")+

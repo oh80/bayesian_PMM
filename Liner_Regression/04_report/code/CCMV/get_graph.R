@@ -2,7 +2,7 @@ main <- function(){
   library("ggplot2")
   
   #read data 
-  missing_type <- "MCAR"
+  missing_type <- "NMAR"
   data <- read_data(missing_type)
   
   #get graph
@@ -34,7 +34,8 @@ read_data <- function(missing_type){
 
 get_graph <- function(missing_type ,data){
   x_axis <- c(rep(seq(1, 10, by = 1),4))
-  estimated_values <- c(data[[1]]$estimation[2:11], data[[2]]$estimation[2:11], data[[3]]$estimation[2:11], 
+  estimated_values <- c(data[[1]]$estimated_values[2:11], data[[2]]$estimated_values[2:11],
+                        data[[3]]$estimated_values[2:11], 
                         seq(1, 10, by = 1))
   missing_rate <- c(rep("missing rate = 0.1", 10), rep("missing rate = 0.25", 10),
                     rep("missing rate = 0.5", 10), rep("real", 10))
@@ -57,5 +58,4 @@ get_graph <- function(missing_type ,data){
 }
 
 
-main()
-
+ main()

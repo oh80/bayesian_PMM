@@ -1,7 +1,7 @@
 main <- function(){
   #read_data
-  missing_rate <- 0.25
-  missing_type <- "NMAR"
+  missing_rate <- 0.5
+  missing_type <- "MAR"
   file_name <- paste0(missing_type , "_", missing_rate, ".obj")
   path <- here::here("Liner_regression", "02_build","data", file_name)
   data <- readRDS(path)
@@ -110,7 +110,7 @@ combine <- function(estimate_list){
   }
   
   output <- list()
-  output$estimation <- combined_estimation
+  output$estimated_values <- combined_estimation
   output$var <- var
   return(output)
 }
@@ -124,4 +124,5 @@ save <- function(results, file_name){
 
 
 main()
+
 

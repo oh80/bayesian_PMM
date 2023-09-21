@@ -46,12 +46,15 @@ get_sigma  <- function(data){
   complete_data <- data |> dplyr::filter(R == 0) |> dplyr::select(-R)
   X <- complete_data |> dplyr::select(-Y) |> as.matrix()
   X_square <- t(X) %*% X
+  Y <- complete_data |> dplyr::select(Y) |> as.matrix()
   
   beta_ols <- get_OLS_extimater(data)
   X_beta <- X %*% beta_ols 
-  u <- Y -X_beta 
-  uu <- u*t(u)
-  sigma <- mean(uu[,1])
+  u <- Y - X_beta 
+  uu <- u * u
+  sigma <- mean(uu)
   
   return(sigma)
 }
+
+
