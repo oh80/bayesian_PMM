@@ -1,6 +1,6 @@
 main <- function(){
   #read_data
-  missing_rate <- 0.5
+  missing_rate <- 0.1
   missing_type <- "MAR"
   file_name <- paste0(missing_type , "_", missing_rate, ".obj")
   path <- here::here("Liner_regression", "02_build","data", file_name)
