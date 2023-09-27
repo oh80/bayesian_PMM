@@ -7,7 +7,8 @@ get_estimated_values <- function(missing_rate, missing_type){
   path <- here::here("Liner_regression", "02_build","data", file_name)
   data <- readRDS(path)
   
-  source("Liner_Regression/03_analyze/code/Bayesian_PMM/compute_complete_data_params.R")
+  code_path <- here::here("Liner_Regression","03_analyze","code","Bayesian_PMM","compute_complete_data_params.R")
+  source(code_path)
   
   #get estimated values
   weight <- get_weight(data)
@@ -69,7 +70,8 @@ get_standard_error <- function(missing_rate, missing_type){
   path <- here::here("Liner_regression", "02_build","data", file_name)
   data <- readRDS(path)
   
-  source("Liner_Regression/03_analyze/code/Bayesian_PMM/compute_complete_data_params.R")
+  code_path <- here::here("Liner_Regression","03_analyze","code","Bayesian_PMM","compute_complete_data_params.R")
+  source(code_path)
   
   #get standard error
   weight <- get_weight(data)
@@ -110,3 +112,7 @@ compute_standard_error <- function(weight, beta_var, beta_var_0){
     magrittr::set_colnames(col_names)
   return(output)
 }
+
+
+
+get_estimated_values(0.1, "MCAR")

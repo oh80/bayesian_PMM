@@ -1,6 +1,6 @@
 main <- function(){
   library("ggplot2")
-  source("Liner_Regression/04_report/code/Bayesian_PMM/get_estimated_values.R")
+  source("Liner_Regression/04_report/code/bayesian_PMM/get_estimated_values.R")
   
   #get estimated values
   missing_type <- "MCAR"

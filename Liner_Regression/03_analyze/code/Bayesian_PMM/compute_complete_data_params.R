@@ -29,6 +29,7 @@ get_ols_var <- function(data){
   complete_data <- data |> dplyr::filter(R == 0) |> dplyr::select(-R)
   X <- complete_data |> dplyr::select(-Y) |> as.matrix()
   X_square <- t(X) %*% X
+  Y <- complete_data |> dplyr::select(Y)
   
   beta_ols <- get_OLS_extimater(data)
   X_beta <- X %*% beta_ols 
