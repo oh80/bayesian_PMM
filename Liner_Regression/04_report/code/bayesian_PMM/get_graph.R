@@ -4,7 +4,7 @@ main <- function(){
   source(code_path)
   
   #get estimated values
-  missing_type <- "NMAR"
+  missing_type <- "MCAR"
   data <- store_estimated_values(missing_type)
   
   #get graph
