@@ -6,8 +6,8 @@ main <- function(){
   source(code_path)
   
   # read data 
-  missing_rate <- 0.1
-  missing_type <- "MCAR"
+  missing_rate <- 0.5
+  missing_type <- "NMAR"
   file_name <- paste0(missing_type , "_", missing_rate, ".obj")
   path <- here::here("Liner_regression", "02_build","data", file_name)
   data <- readRDS(path)
