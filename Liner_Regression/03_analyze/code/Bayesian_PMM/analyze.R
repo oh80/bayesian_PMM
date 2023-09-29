@@ -1,11 +1,13 @@
 main <- function(){
   #read functions
-  source("Liner_Regression/03_analyze/code/Bayesian_PMM/compute_complete_data_params.R")
-  source("Liner_Regression/03_analyze/code/Bayesian_PMM/gibbs_sampler.R")
+  code_path <- here::here("Liner_Regression","03_analyze","code","Bayesian_PMM","compute_complete_data_params.R")
+  source(code_path)
+  code_path <- here::here("Liner_Regression","03_analyze","code","Bayesian_PMM","gibbs_sampler.R")
+  source(code_path)
   
   # read data 
-  missing_rate <- 0.5
-  missing_type <- "NMAR"
+  missing_rate <- 0.1
+  missing_type <- "MCAR"
   file_name <- paste0(missing_type , "_", missing_rate, ".obj")
   path <- here::here("Liner_regression", "02_build","data", file_name)
   data <- readRDS(path)

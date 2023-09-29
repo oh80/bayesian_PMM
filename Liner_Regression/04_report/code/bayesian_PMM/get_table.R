@@ -3,7 +3,7 @@ main <- function(){
   source(code_path)
   
   #set params
-  missing_rate <- 0.1
+  missing_rate <- 0.25
   
   #read results
   results <- read_results(missing_rate)

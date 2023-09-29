@@ -75,24 +75,25 @@ get_standard_error <- function(missing_rate, missing_type){
   
   #get standard error
   weight <- get_weight(data)
-  beta_var <- get_sample_var(sample)
+  burn_in <- 300
+  
+  beta_var <- get_sample_var(sample, burn_in)
   beta_var_0 <- get_ols_var(data)
   
   standard_error <- compute_standard_error(weight, beta_var, beta_var_0)
-  
-  #save 
   
   return(standard_error)
 }
 
 
-get_sample_var <- function(sample){
+get_sample_var <- function(sample, burn_in){
   col_names <- paste0("var_",seq(1, 10, by = 1))
   se_matrix <- matrix(nrow = 10, ncol = 10)
   for (j in 1:10) {
     beta <- sample[[j]]$beta_sample |> t()
     for (k in 1:10) {
-      se_matrix[j,k] <- var(beta[,k])
+      N <- length(beta[,1])
+      se_matrix[j,k] <- var(beta[burn_in:N ,k])
     }
   }
   output <- se_matrix |> as.data.frame() |> 
@@ -103,16 +104,21 @@ get_sample_var <- function(sample){
 
 compute_standard_error <- function(weight, beta_var, beta_var_0){
   weight <- weight$n
-  col_names <- paste0("se ", seq(1,10,by=1))
+  col_names <- paste0("se",seq(1,10,by=1))
   se_matrix <- matrix(ncol = 10, nrow = 1)
-  for (j in 1:10) {
-    se_matrix[1,j] <- sqrt(sum(beta_var[,j] + beta_var_0[j]) )
+  for (i in 1:10) {
+    var <- sum(beta_var[,i] * weight[2:11]) + beta_var_0[i] * weight[1]
+    se_matrix[1,i] <- sqrt(var)
   }
-  output <- se_matrix |> as.data.frame() |> 
-    magrittr::set_colnames(col_names)
+  output <- se_matrix |> as.data.frame() |> magrittr::set_colnames(col_names)
   return(output)
 }
 
 
+se <- get_standard_error(0.5, "MCAR")
 
-get_estimated_values(0.1, "MCAR")
+
+
+
+
+

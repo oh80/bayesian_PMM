@@ -31,7 +31,7 @@ gibbs_sampler <- function(data, j, sample_size, beta_0, Sigma_0, sigma){
     X <- X |> as.matrix()
     X_square <- t(X) %*% X
 
-    #neta posterior params
+    #beta posterior params
     posterior_precision <- prior_precision + X_square/sigma
     posterior_mean <- solve(posterior_precision) %*% (prior_mean + (t(X) %*% Y)/sigma)
 
@@ -39,7 +39,7 @@ gibbs_sampler <- function(data, j, sample_size, beta_0, Sigma_0, sigma){
     beta_sample[1:10, i] <- mvtnorm::rmvnorm(n = 1, mean =  posterior_mean, sigma = solve(posterior_precision)) |> t()
 
     #missing value posterior params
-    posterior_var <- 1/prior_var +  beta_sample[j, i]/sigma 
+    posterior_var <- 1/(1/prior_var +  beta_sample[j, i]/sigma)
     beta_obs <- beta_sample[-j,i] |> as.matrix()
     beta_mis <- beta_sample[j,i]
     coef_first_order_term <- prior_mean_X/prior_var +  rep(beta_mis/sigma, n) * (Y + X_obs_matrix%*%beta_obs)

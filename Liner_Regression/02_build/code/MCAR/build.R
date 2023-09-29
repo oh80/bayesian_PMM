@@ -4,8 +4,8 @@ main <- function(){
   raw_data <- readRDS(path)
   
   #set params
-  set.seed(428)
-  missing_rate <- 0.25
+  set.seed(28)
+  missing_rate <- 0.5
   
   #get missing data
   missing_indicater <- get_index(raw_data, missing_rate)

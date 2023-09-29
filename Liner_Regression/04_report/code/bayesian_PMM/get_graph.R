@@ -1,9 +1,10 @@
 main <- function(){
   library("ggplot2")
-  source("Liner_Regression/04_report/code/bayesian_PMM/get_estimated_values.R")
+  code_path <- here::here("Liner_Regression","04_report","code","bayesian_PMM","get_estimated_values.R")
+  source(code_path)
   
   #get estimated values
-  missing_type <- "MCAR"
+  missing_type <- "NMAR"
   data <- store_estimated_values(missing_type)
   
   #get graph
