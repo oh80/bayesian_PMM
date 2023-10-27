@@ -1,6 +1,3 @@
-path <- here::here("RCT","02_build","data","MCAR","MCAR_0.2.obj")
-data <- readRDS(path)
-
 
 impute_data <- function(data, imputed_pattern, weight, delta){
   R3_data <- data |> dplyr::filter(R == 3)
@@ -35,8 +32,8 @@ impute_data <- function(data, imputed_pattern, weight, delta){
       coefs2 <- model2$coefficients |> as.vector()
       covariables <- missing_data[i,] |> dplyr::select(X1,X2,X3,X4,X5, Treatment)
       sd <- sqrt(var(R2_data$Y2) + var(R3_data$Y2)/2)
-      mean <- coefs1[1]  + sum(coefs1[2:6]* covariables) * weight[1] +
-        coefs2[1]  + sum(coefs2[2:6]* covariables) * weight[2]
+      mean <- (coefs1[1]  + sum(coefs1[2:6]* covariables)) * weight[1] +
+        (coefs2[1]  + sum(coefs2[2:6]* covariables)) * weight[2]
       missing_data[i,]$Y2 <- rnorm(n = 1, mean = mean + delta, sd = sd)
     }
     return(missing_data)
@@ -57,9 +54,9 @@ impute_data <- function(data, imputed_pattern, weight, delta){
       coefs3 <- model3$coefficients |> as.vector()
       covariables <- missing_data[i,] |> dplyr::select(X1,X2,X3,X4,X5, Treatment)
       sd <- sqrt(var(R2_data$Y1) + var(R3_data$Y1)+ var(R1_data$Y1)/3)
-      mean <- coefs1[1]  + sum(coefs1[2:6]* covariables) * weight[1] +
-        coefs2[1]  + sum(coefs2[2:6]* covariables) * weight[2] + 
-        coefs3[1]  + sum(coefs3[2:6]* covariables) * weight[3]
+      mean <- (coefs1[1]  + sum(coefs1[2:6]* covariables)) * weight[1] +
+        (coefs2[1]  + sum(coefs2[2:6]* covariables)) * weight[2] + 
+        (coefs3[1]  + sum(coefs3[2:6]* covariables)) * weight[3]
       missing_data[i,]$Y1 <- rnorm(n = 1, mean = mean + delta, sd = sd)
     }
     return(missing_data)
@@ -67,7 +64,7 @@ impute_data <- function(data, imputed_pattern, weight, delta){
 }
 
 
-multiple_imputation <- function(data, weight1, weight2, delta){
+single_imputation <- function(data, weight1, weight2, delta){
   pattern <- data$R
   n <- length(data$X1)
   
