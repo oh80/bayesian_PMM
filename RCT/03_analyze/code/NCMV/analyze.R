@@ -8,7 +8,7 @@ main <- function(){
   data <- readRDS(path)
   
   #read functions
-  code_path <- here::here("RCT","03_analyze","code","common_code","common.R")
+  code_path <- here::here("RCT","03_analyze","code","NCMV","imputation.R")
   source(code_path)
   
   #param set
@@ -36,7 +36,7 @@ multiple_imputation <- function(data, D, delta){
   weight2 <- c(0,1)
   for (d in 1:D) {
     set.seed(d)
-    output[[d]] <- single_imputation(data, weight1, weight2, delta)
+    output[[d]] <- single_imputation(data, delta)
   }
   return(output)
 }
