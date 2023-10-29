@@ -22,7 +22,9 @@ generate_baseline <- function(sample_size){
   
   baseline_data <- rep(0, sample_size)
   for (i in 1:sample_size) {
-    baseline_data[i] <- sum(control_varable[i,] * control_varable_effect)
+    set.seed(i-0)
+    epsilon <- rnorm(1,0,2)
+    baseline_data[i] <- sum(control_varable[i,] * control_varable_effect) + epsilon
   }
   
   output <- control_varable |> as.data.frame() |> 
@@ -47,37 +49,46 @@ generate_follow_up <- function(baseline_data){
   #generate first follow up
   data <- baseline_data |> dplyr::mutate("Y1" = rep(0, N))
   for(i in 1:N){
+    set.seed(i)
     if(data$Treatment[i] == 1){
-      epsilon <- rnorm(1, 10, 2)
-      data$Y1[i] = data$Y0[i] + epsilon
+      growth <- rnorm(1, 10, 2)
+      epsilon <- rnorm(1, 0, 2)
+      data$Y1[i] = data$Y0[i] + growth + epsilon
     }
     if(data$Treatment[i] == 0){
-      epsilon <- rnorm(1, 1, 2)
-      data$Y1[i] = data$Y0[i] + epsilon
+      growth <- rnorm(1, 1, 2)
+      epsilon <- rnorm(1, 0, 2)
+      data$Y1[i] = data$Y0[i] + growth + epsilon
     }
   }
   #generate second follow up
   data <- data |> dplyr::mutate("Y2" = rep(0, N))
   for(i in 1:N){
+    set.seed(i+1)
     if(data$Treatment[i] == 1){
-      epsilon <- rnorm(1, -2, 2)
-      data$Y2[i] = data$Y1[i] + epsilon
+      growth <- rnorm(1, -2, 3)
+      epsilon <- rnorm(1, 0, 2)
+      data$Y2[i] = data$Y1[i] + growth + epsilon
     }
     if(data$Treatment[i] == 0){
-      epsilon <- rnorm(1, 1, 2)
-      data$Y2[i] = data$Y1[i] + epsilon
+      growth <- rnorm(1, 1, 3)
+      epsilon <- rnorm(1, 0, 2)
+      data$Y2[i] = data$Y1[i] + growth + epsilon
     }
   }
   #generate third follow up
   data <- data |> dplyr::mutate("Y3" = rep(0, N))
   for(i in 1:N){
+    set.seed(i+3)
     if(data$Treatment[i] == 1){
-      epsilon <- rnorm(1, -3, 2)
-      data$Y3[i] = data$Y2[i] + epsilon
+      growth <- rnorm(1, -3, 3)
+      epsilon <- rnorm(1, 0, 2)
+      data$Y3[i] = data$Y2[i] + growth + epsilon
     }
     if(data$Treatment[i] == 0){
-      epsilon <- rnorm(1, 1, 2)
-      data$Y3[i] = data$Y2[i] + epsilon
+      growth <- rnorm(1, 1, 3)
+      epsilon <- rnorm(1, 0, 2)
+      data$Y3[i] = data$Y2[i] + growth + epsilon
     }
   }
   return(data)
@@ -90,4 +101,5 @@ save <- function(data){
 }
 
 
- main()
+main()
+
