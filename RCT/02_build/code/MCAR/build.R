@@ -3,7 +3,7 @@ main <- function(){
   data <- readRDS(path)
   
   set.seed(428)
-  missing_rate <- 0.3
+  missing_rate <- 0.1
   pattern_prob <- get_prob(missing_rate)
   
   missing_data <- data |> get_missing_indicater(pattern_prob) |> 
