@@ -32,8 +32,6 @@ main <- function(){
 
 multiple_imputation <- function(data, D, delta){
   output <- list()
-  weight1 <- c(0,0,1)
-  weight2 <- c(0,1)
   for (d in 1:D) {
     set.seed(d)
     output[[d]] <- single_imputation(data, delta)
