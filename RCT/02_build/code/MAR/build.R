@@ -70,7 +70,7 @@ get_missing_data <- function(data){
 
 save <- function(missing_data, missing_rate){
   file_name <- paste0("MAR_", missing_rate, ".obj")
-  path <- here::here("RCT","02_build","data","MAR",file_name)
+  path <- here::here("RCT","02_build","data","NMAR",file_name)
   saveRDS(missing_data, path)
 }
 
