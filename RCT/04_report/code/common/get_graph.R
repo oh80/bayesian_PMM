@@ -2,8 +2,8 @@ main_analysis_graph <- function(){
   #library(ggplot2)
   
   #read missing 
-  missing_type <- "MCAR"
-  restriction <- "NCMV"
+  missing_type <- "MAR"
+  restriction <- "ACMV"
   delta <- 0
   
   estimated_values <- read_results(missing_type, restriction, delta) 
