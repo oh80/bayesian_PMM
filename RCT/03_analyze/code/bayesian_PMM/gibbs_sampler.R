@@ -61,7 +61,7 @@ parmater_sampler <- function(X, Y1, Y2, Y3, initial_value, prior_params, sample_
   
   for(i in 1:sample_size){
     #beta1 
-    Sigma_1 <- solve(t(X) %*% H1_sample[[i]] %*% X + solve(prior_params[[1]])
+    Sigma_1 <- solve(t(X) %*% solve(H1_sample[[i]]) %*% X + solve(prior_params[[1]])
                      + t(T_sample[[i]]) %*% solve(G_sample[[i]])%*% T_sample[[i]])
     mu_1 <- Sigma_1 %*% (t(X) %*% solve(H1_sample[[i]]) %*% Y1
                          + t(T_sample[[i]]) %*% solve(G_sample[[i]])%*% t(beta2_sample[[i]]))
@@ -69,7 +69,7 @@ parmater_sampler <- function(X, Y1, Y2, Y3, initial_value, prior_params, sample_
     beta1_sample[[i]] <- mvtnorm::rmvnorm(n = 1, mean = mu_1, sigma = Sigma_1) 
     
     #beta2
-    Sigma_2 <- solve(t(X) %*% H2_sample[[i]] %*% X + solve(prior_params[[2]]) + solve(G_sample[[i]])
+    Sigma_2 <- solve(t(X) %*% solve(H2_sample[[i]]) %*% X + solve(prior_params[[2]]) + solve(G_sample[[i]])
                      + t(T_sample[[i]]) %*% solve(G_sample[[i]])%*% T_sample[[i]])
     mu_2 <- Sigma_2 %*% (t(X) %*% solve(H2_sample[[i]]) %*% Y2 +
                            solve(G_sample[[i]]) %*% T_sample[[i]] %*% t(beta1_sample[[i]])
@@ -78,7 +78,7 @@ parmater_sampler <- function(X, Y1, Y2, Y3, initial_value, prior_params, sample_
     beta2_sample[[i+1]] <- mvtnorm::rmvnorm(n = 1, mean = mu_2, sigma = Sigma_2) 
     
     #beta3
-    Sigma_3 <- solve(t(X) %*% H3_sample[[i]] %*% X + solve(prior_params[[3]]) + solve(G_sample[[i]]))
+    Sigma_3 <- solve(t(X) %*% solve(H3_sample[[i]]) %*% X + solve(prior_params[[3]]) + solve(G_sample[[i]]))
     mu_3 <- Sigma_3 %*% (t(X) %*% solve(H3_sample[[i]]) %*% Y3 +
                            solve(G_sample[[i]]) %*% T_sample[[i]] %*% t(beta2_sample[[i+1]]))
     
@@ -139,7 +139,5 @@ parmater_sampler <- function(X, Y1, Y2, Y3, initial_value, prior_params, sample_
 }
 
 
-
-sample <- R3_gibbs_sampler(data, 100) 
 
 
