@@ -34,8 +34,8 @@ R3_gibbs_sampler <- function(data, sample_size){
   sigma_t0 <- 100
   
   #G
-  v_G0 <- 7
-  S_G0 <- 100*solve(monomvn::rwish(7, diag(7)))
+  v_G0 <- 7+2
+  S_G0 <- 0.1*diag(7)
   
   #H 
   v_H0 <- 7
@@ -97,32 +97,32 @@ parmater_sampler <- function(X, Y1, Y2, Y3, initial_value, prior_params, sample_
     T_sample[[i+1]] <- t_sample
     
     #G
-    v_G <- prior_params[[5]] + 20
+    v_G <- prior_params[[5]] + 3
     S_G <- prior_params[[6]] + (t(beta2_sample[[i+1]]) - T_sample[[i+1]] %*% t(beta1_sample[[i]]))%*%
       t(t(beta2_sample[[i+1]]) - T_sample[[i+1]] %*% t(beta1_sample[[i]])) + 
       (t(beta3_sample[[i+1]]) - T_sample[[i+1]] %*% t(beta2_sample[[i+1]]))%*%
       t(t(beta3_sample[[i+1]]) - T_sample[[i+1]] %*% t(beta2_sample[[i+1]])) 
     
-    G_sample[[i+1]] <- solve(monomvn::rwish(v_G, S_G)) |> as.matrix()
+    G_sample[[i+1]] <- solve(monomvn::rwish(v_G, solve(S_G))) |> as.matrix()
     
     #H1
-    v_H1 <- (prior_params[[7]] + length(Y1))/2
+    v_H1 <- (prior_params[[7]] + length(Y1))
     sigma_H1 <- prior_params[[7]] * prior_params[[8]] +
       (Y1- X %*% t(beta1_sample[[i]])) %*% t(Y1- X %*% t(beta1_sample[[i]]))
-    sigma_1 <- 1/rgamma(n = 1 ,v_H1, sigma_H1)
+    sigma_1 <- 1/rgamma(n = 1 ,v_H1/2, sigma_H1/2)
     H1_sample[[i+1]] <- sigma_1 * diag(length(Y1)) 
     #H2
-    v_H2 <- (prior_params[[7]] + length(Y2))/2
+    v_H2 <- (prior_params[[7]] + length(Y2))
     sigma_H2 <- prior_params[[7]] * prior_params[[8]] +
       (Y2- X %*% t(beta2_sample[[i+1]])) %*% t(Y2- X %*% t(beta2_sample[[i+1]]))
-    sigma_2 <- 1/rgamma(n = 1 ,v_H2, sigma_H2)
+    sigma_2 <- 1/rgamma(n = 1 ,v_H2/2, sigma_H2/2)
     H2_sample[[i+1]] <- sigma_2 * diag(length(Y2))
     
     #H3
-    v_H3 <- (prior_params[[7]] + length(Y3))/2
+    v_H3 <- (prior_params[[7]] + length(Y3))
     sigma_H3 <- prior_params[[7]] * prior_params[[8]] +
       (Y3- X %*% t(beta3_sample[[i+1]])) %*% t(Y3- X %*% t(beta3_sample[[i+1]]))
-    sigma_3 <- 1/rgamma(n = 1 ,v_H3, sigma_H3)
+    sigma_3 <- 1/rgamma(n = 1 ,v_H3/2, sigma_H3/2)
     H3_sample[[i+1]] <- sigma_3 * diag(length(Y3))
   }
   output <- list()
