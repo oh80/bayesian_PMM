@@ -1,3 +1,4 @@
+####R3_gibbs_sampler####
 R3_gibbs_sampler <- function(data, sample_size){
   set.seed(428)
   
@@ -146,6 +147,7 @@ R3_sampler <- function(X, Y1, Y2, Y3, initial_value, prior_params, sample_size){
   return(output)
 }
 
+####R2_gibbs_sampler####
 
 R2_gibbs_sampler <- function(data, sample_size, prior_params){
   set.seed(428)
@@ -274,6 +276,7 @@ R2_sampler <- function(X, Y1, Y2, initial_value, prior_params, sample_size){
   return(output)
 }
 
+####R1_gibbs_sampler####
 
 R1_gibbs_sampler <- function(data, sample_size, prior_params){
   set.seed(428)
@@ -410,6 +413,8 @@ R1_sampler <- function(X, Y1, initial_value, prior_params, sample_size){
   
   return(output)
 }
+
+####R0_gibbs_sampler####
 
 R0_gibbs_sampler <- function(data, sample_size, prior_params){
   set.seed(428)
