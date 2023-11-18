@@ -1,6 +1,6 @@
 main <- function(){
   #read data
-  missing_type <- "MCAR"
+  missing_type <- "NMAR"
   missing_rate <- 0.3
   
   file_name <- paste0(missing_type,"_", missing_rate, ".", "obj")
@@ -14,8 +14,8 @@ main <- function(){
   source(code_path)
   
   #set sample_size and burn_in
-  sample_size <- 20
-  burn_in <- 3
+  sample_size <- 100
+  burn_in <- 20
 
   #complete data giggs sampler
   R3_params_sample <- R3_gibbs_sampler(data, sample_size) |> cut_burn_in(burn_in)
@@ -37,8 +37,8 @@ main <- function(){
   R0_estimated_values <- get_estimated_values(R0_sample)
   
   #combine results
-  standard_error <- get_se(R2_prior_parameter, R1_prior_parameter,
-                           R0_prior_parameter, R0_sample, data)
+  standard_error <- get_se(R2_prior_parameter, R1_prior_parameter, R0_prior_parameter,
+                           R3_params_sample, R2_sample, R1_sample, R0_sample, data)
   results <- combine_results(R3_estimated_values, R2_estimated_values,
                              R1_estimated_values, R0_estimated_values,
                              data, standard_error)
@@ -94,7 +94,8 @@ cut_burn_in <- function(sample, burn_in){
 }
 
 
-get_se <- function(R2_prior_parameter, R1_prior_parameter, R0_prior_parameter, R0_sample, data){
+get_se <- function(R2_prior_parameter, R1_prior_parameter, R0_prior_parameter,
+                   R3_sample, R2_sample,R1_sample,  R0_sample, data){
   n <- data |> dplyr::group_by(R)|> dplyr::count(name = "R")
   n0 <- n[1,1] |> as.numeric()
   n1 <- n[2,1] |> as.numeric()
@@ -122,9 +123,20 @@ get_se <- function(R2_prior_parameter, R1_prior_parameter, R0_prior_parameter, R
   sigma_3 <- R3_sigma_3 * n3/N + R2_sigma_3  * n2/N + R1_sigma_3  * n1/N + R0_sigma_3 * n0/N
   
   #Sigma_2
-  R3_sigma_2 <- R2_prior_parameter[[4]]
   R2_sigma_2 <- R1_prior_parameter[[4]]
   R1_sigma_2 <- R0_prior_parameter[[4]]
+  
+  R3_mu_2 <- R3_sample$beta2[[1]] / length(R3_sample$beta2)
+  for (i in 2:length(R3_sample$beta2)){
+    add <- R3_sample$beta2[[i]] / length(R3_sample$beta2)
+    R3_mu_2 <- R3_mu_2 + add
+  }
+  
+  R3_sigma_2 <- t(R3_sample$beta2[[1]] - R3_mu_2)  %*% (R3_sample$beta2[[1]] - R3_mu_2) / length(R3_sample$beta2)
+  for (i in 2:length(R0_sample$beta2)){
+    add <- t(R3_sample$beta2[[i]] - R3_mu_2)  %*% (R3_sample$beta2[[i]] - R3_mu_2) / length(R3_sample$beta2)
+    R3_sigma_2<- R3_sigma_2 + add
+  }
   
   R0_mu_2 <- R0_sample$beta2[[1]] / length(R0_sample$beta2)
   for (i in 2:length(R0_sample$beta2)){
@@ -141,9 +153,30 @@ get_se <- function(R2_prior_parameter, R1_prior_parameter, R0_prior_parameter, R
   sigma_2 <- R3_sigma_2 * n3/N + R2_sigma_2  * n2/N + R1_sigma_2  * n1/N + R0_sigma_2 * n0/N
   
   #Sigma_1
-  R3_sigma_1 <- R2_prior_parameter[[2]]
-  R2_sigma_1 <- R1_prior_parameter[[2]]
   R1_sigma_1 <- R0_prior_parameter[[2]]
+  R3_mu_1 <- R3_sample$beta1[[1]] / length(R3_sample$beta1)
+  for (i in 2:length(R3_sample$beta1)){
+    add <- R3_sample$beta1[[i]] / length(R3_sample$beta1)
+    R3_mu_1 <- R3_mu_1 + add
+  }
+  
+  R3_sigma_1 <- t(R3_sample$beta1[[1]] - R3_mu_1)  %*% (R3_sample$beta1[[1]] - R3_mu_1) / length(R3_sample$beta1)
+  for (i in 2:length(R3_sample$beta2)){
+    add <- t(R3_sample$beta1[[i]] - R3_mu_1)  %*% (R3_sample$beta1[[i]] - R3_mu_1) / length(R3_sample$beta1)
+    R3_sigma_1<- R3_sigma_1 + add
+  }
+  
+  R2_mu_1 <- R2_sample$beta1[[1]] / length(R2_sample$beta1)
+  for (i in 2:length(R2_sample$beta1)){
+    add <- R2_sample$beta1[[i]] / length(R2_sample$beta1)
+    R2_mu_1 <- R2_mu_1 + add
+  }
+  
+  R2_sigma_1 <- t(R2_sample$beta1[[1]] - R2_mu_1)  %*% (R2_sample$beta1[[1]] - R2_mu_1) / length(R2_sample$beta1)
+  for (i in 2:length(R2_sample$beta2)){
+    add <- t(R2_sample$beta1[[i]] - R2_mu_1)  %*% (R2_sample$beta1[[i]] - R2_mu_1) / length(R2_sample$beta1)
+    R2_sigma_1<- R2_sigma_1 + add
+  }
   
   R0_mu_1 <- R0_sample$beta1[[1]] / length(R0_sample$beta1)
   for (i in 2:length(R0_sample$beta1)){
@@ -203,4 +236,14 @@ save <- function(results, file_name){
 
 
 results <- main()
+
+results$beta1
+results$beta2
+results$beta3
+
+results$standard_error$sigma_3
+results$standard_error$sigma_2
+results$standard_error$sigma_1
+
+
 
