@@ -14,8 +14,8 @@ main <- function(){
   source(code_path)
   
   #set sample_size and burn_in
-  sample_size <- 100
-  burn_in <- 20
+  sample_size <- 2000
+  burn_in <- 400
 
   #complete data giggs sampler
   R3_params_sample <- R3_gibbs_sampler(data, sample_size) |> cut_burn_in(burn_in)
@@ -244,6 +244,3 @@ results$beta3
 results$standard_error$sigma_3
 results$standard_error$sigma_2
 results$standard_error$sigma_1
-
-
-

@@ -1,18 +1,22 @@
-main_analysis_graph <- function(){
-  #library(ggplot2)
+get_graph <- function(){
+  library(ggplot2)
   
   #read missing 
-  missing_type <- "MAR"
+  missing_type <- "NMAR"
   restriction <- "ACMV"
   delta <- 0
   
+  #get graph
   estimated_values <- read_results(missing_type, restriction, delta) 
   treatment_effects <- extract_effect(estimated_values)
   
-  plot <- get_graph(treatment_effects, missing_type)
-  
+  plot <- get_plot(treatment_effects, missing_type, delta)
 
-  return(plot)
+
+  #save plot
+  file_name <- paste0(missing_type, "delta", delta,".pdf")
+  path <- here::here("RCT", "04_report","output", restriction, file_name)
+  ggsave(filename = path, plot = plot, device = "pdf",width = 3, height = 5)
 }
 
 
@@ -26,7 +30,7 @@ read_results <- function(missing_type, restriction, delta){
   
   results1 <- readRDS(path1)
   results2 <- readRDS(path2)
-  results3 <- readRDS(path1)
+  results3 <- readRDS(path3)
   
   output <- list(results1, results2, results3)
   return(output)
@@ -44,7 +48,7 @@ extract_effect <- function(results){
 }
 
 
-get_graph <- function(treatment_effects, missing_type){
+get_plot <- function(treatment_effects, missing_type, delta){
   real_parameter <- data.frame("estimated_values" = c(9, 6, 2),
                                "Time" = seq(1,3, by= 1),
                                "missing_rate" = rep("real", 3))
@@ -53,9 +57,13 @@ get_graph <- function(treatment_effects, missing_type){
     geom_point() +
     geom_line() +
     scale_color_manual(values = c("darkslategray2","deepskyblue2","dodgerblue4","coral2"))+
+    theme(panel.grid.minor.y = element_blank(),
+          plot.title = element_text(vjust = -2, hjust = 0, size = 17),
+          plot.subtitle = element_text(vjust = -30, hjust = 2.2, size = 11))+
     scale_x_continuous(breaks = seq(0, 4, by = 1)) +
-    scale_y_continuous(breaks = seq(0, 10, by = 2)) +
-    labs(title = missing_type) +
+    scale_y_continuous(breaks = seq(-2, 10, by = 1), limits=c(-2,10)) +
+    labs(title = missing_type, 
+         subtitle = paste0("delta = ", delta)) +
     ylab("Treatment effect")+
     xlab("Time")
   
@@ -63,5 +71,4 @@ get_graph <- function(treatment_effects, missing_type){
 }
 
 
-plot <- main_analysis_graph()
-plot
+get_graph()

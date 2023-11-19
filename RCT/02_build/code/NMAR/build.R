@@ -3,7 +3,7 @@ main <- function(){
   data <- readRDS(path)
   
   set.seed(428)
-  missing_rate <- 0.3
+  missing_rate <- 0.2
   missing_data <- get_missing_indicater(data, missing_rate) |> 
     get_missing_data()
   
@@ -75,4 +75,4 @@ save <- function(missing_data, missing_rate){
 }
 
 
-miss <- main()
+main()
