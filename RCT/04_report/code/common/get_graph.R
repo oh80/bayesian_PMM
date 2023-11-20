@@ -4,7 +4,7 @@ get_graph <- function(){
   #read missing 
   missing_type <- "NMAR"
   restriction <- "ACMV"
-  delta <- 0
+  delta <- -5
   
   #get graph
   estimated_values <- read_results(missing_type, restriction, delta) 

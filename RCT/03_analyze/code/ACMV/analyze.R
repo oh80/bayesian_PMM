@@ -1,7 +1,7 @@
 main <- function(){
   #read data
-  missing_type <- "MCAR"
-  missing_rate <- 0.1
+  missing_type <- "NMAR"
+  missing_rate <- 0.3
   
   file_name <- paste0(missing_type,"_", missing_rate, ".", "obj")
   path <- here::here("RCT","02_build","data", missing_type ,file_name)
@@ -13,7 +13,7 @@ main <- function(){
   
   #param set
   D <- 10
-  delta <- 0
+  delta <- -5
   
   #imputation
   psude_complete_data <- multiple_imputation(data, D, delta)

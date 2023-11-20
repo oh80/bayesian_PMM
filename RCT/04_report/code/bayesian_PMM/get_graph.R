@@ -1,8 +1,8 @@
 get_graph <- function(){
-  #library(ggplot2)
+  library(ggplot2)
   
   #read missing 
-  missing_type <- "MAR"
+  missing_type <- "MCAR"
   
   #get graph
   estimated_values <- read_results(missing_type) 
