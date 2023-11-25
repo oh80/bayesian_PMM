@@ -4,7 +4,7 @@ main <- function(){
   source(code_path)
   
   #get estimated values
-  missing_type <- "MCAR"
+  missing_type <- "NMAR"
   data <- store_estimated_values(missing_type)
   
   #get graph
@@ -12,7 +12,7 @@ main <- function(){
   
   #save plot
   file_name <- paste0(missing_type, "estimated_values.pdf")
-  path <- here::here("Liner_regression", "04_report", "output","bayesian_PMM",file_name)
+  path <- here::here("RCT", "04_report", "output","bayesian_PMM",file_name)
   ggsave(filename = path, plot = plot, device = "pdf",  width = 8, height = 4)
 }
 
