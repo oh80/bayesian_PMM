@@ -2,7 +2,7 @@ get_graph <- function(){
   library(ggplot2)
   
   #read missing 
-  missing_type <- "MCAR"
+  missing_type <- "NMAR"
   
   #get graph
   estimated_values <- read_results(missing_type) 
@@ -12,9 +12,9 @@ get_graph <- function(){
   
   
   #save plot
-  # file_name <- paste0(missing_type, "delta", delta,".pdf")
-  # path <- here::here("RCT", "04_report","output", restriction, file_name)
-  # ggsave(filename = path, plot = plot, device = "pdf",width = 3, height = 5)
+  file_name <- paste0(missing_type,".pdf")
+  path <- here::here("RCT", "04_report","output", file_name)
+  ggsave(filename = path, plot = plot, device = "pdf",width = 3, height = 5)
   
   return(plot)
 }
@@ -54,7 +54,7 @@ get_plot <- function(treatment_effects, missing_type){
   plot <- ggplot(data = treatment_effects, aes(x = Time, y = estimated_values, color = missing_rate)) +
     geom_point() +
     geom_line() +
-    scale_color_manual(values = c("darkslategray2","deepskyblue2","dodgerblue4","coral2"))+
+    scale_color_manual(values = c("palegreen1","seagreen3","seagreen","coral2"))+
     theme(panel.grid.minor.y = element_blank(),
           plot.title = element_text(vjust = -2, hjust = 0, size = 17))+
     scale_x_continuous(breaks = seq(0, 4, by = 1)) +

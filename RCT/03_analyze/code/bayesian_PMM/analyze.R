@@ -1,6 +1,6 @@
 main <- function(){
   #read data
-  missing_type <- "NMAR"
+  missing_type <- "MCAR"
   missing_rate <- 0.3
   
   file_name <- paste0(missing_type,"_", missing_rate, ".", "obj")
@@ -14,8 +14,8 @@ main <- function(){
   source(code_path)
   
   #set sample_size and burn_in
-  sample_size <- 2000
-  burn_in <- 400
+  sample_size <- 1000
+  burn_in <- 300
 
   #complete data giggs sampler
   R3_params_sample <- R3_gibbs_sampler(data, sample_size) |> cut_burn_in(burn_in)
@@ -45,8 +45,7 @@ main <- function(){
   
   #save estimated values
   file_name <- paste0(missing_type ,missing_rate,".obj")
-  #save(estimate_result, file_name)
-  return(results)
+  save(results, file_name)
 }
 
 
@@ -235,12 +234,4 @@ save <- function(results, file_name){
 
 
 
-results <- main()
-
-results$beta1
-results$beta2
-results$beta3
-
-results$standard_error$sigma_3
-results$standard_error$sigma_2
-results$standard_error$sigma_1
+ main()

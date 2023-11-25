@@ -38,7 +38,7 @@ R3_gibbs_sampler <- function(data, sample_size){
   sigma_t0 <- 100
   
   #G
-  v_G0 <- 7+2
+  v_G0 <- 7
   S_G0 <- 0.1*diag(7)
   
   #H1 H2 H3
@@ -80,7 +80,7 @@ R3_sampler <- function(X, Y1, Y2, Y3, initial_value, prior_params, sample_size){
                      + t(T_sample[[i]]) %*% solve(G_sample[[i]])%*% T_sample[[i]])
     mu_2 <- Sigma_2 %*% (t(X) %*% solve(H2_sample[[i]]) %*% Y2 +
                            solve(G_sample[[i]]) %*% T_sample[[i]] %*% t(beta1_sample[[i]])
-                         + prior_params[[4]] %*% prior_params[[3]]
+                         + solve(prior_params[[4]]) %*% prior_params[[3]]
                          + t(T_sample[[i]]) %*% solve(G_sample[[i]])%*% t(beta3_sample[[i]]))
     
     beta2_sample[[i+1]] <- mvtnorm::rmvnorm(n = 1, mean = mu_2, sigma = Sigma_2) 
@@ -88,7 +88,7 @@ R3_sampler <- function(X, Y1, Y2, Y3, initial_value, prior_params, sample_size){
     #beta3
     Sigma_3 <- solve(t(X) %*% solve(H3_sample[[i]]) %*% X + solve(prior_params[[6]]) + solve(G_sample[[i]]))
     mu_3 <- Sigma_3 %*% (t(X) %*% solve(H3_sample[[i]]) %*% Y3 +
-                           + prior_params[[6]] %*% prior_params[[5]]
+                           + solve(prior_params[[6]]) %*% prior_params[[5]]
                            + solve(G_sample[[i]]) %*% T_sample[[i]] %*% t(beta2_sample[[i+1]]))
     
     beta3_sample[[i+1]] <- mvtnorm::rmvnorm(n = 1, mean = mu_3, sigma = Sigma_3)
@@ -103,10 +103,10 @@ R3_sampler <- function(X, Y1, Y2, Y3, initial_value, prior_params, sample_size){
                            beta2_sample[[i+1]][t]*beta3_sample[[i+1]][t]/G_sample[[i]][t,t])
       t_sample[t,t] <- rnorm(n = 1, mu_t, sigma_t) |> as.matrix()
     }
-    T_sample[[i+1]] <- t_sample
+    T_sample[[i+1]] <- diag(7)
     
     #G
-    v_G <- prior_params[[8]] + 3
+    v_G <- prior_params[[8]] + 2
     S_G <- prior_params[[9]] + (t(beta2_sample[[i+1]]) - T_sample[[i+1]] %*% t(beta1_sample[[i]]))%*%
       t(t(beta2_sample[[i+1]]) - T_sample[[i+1]] %*% t(beta1_sample[[i]])) + 
       (t(beta3_sample[[i+1]]) - T_sample[[i+1]] %*% t(beta2_sample[[i+1]]))%*%
@@ -204,7 +204,7 @@ R2_sampler <- function(X, Y1, Y2, initial_value, prior_params, sample_size){
                      + t(T_sample[[i]]) %*% solve(G_sample[[i]])%*% T_sample[[i]])
     mu_2 <- Sigma_2 %*% (t(X) %*% solve(H2_sample[[i]]) %*% Y2 +
                            solve(G_sample[[i]]) %*% T_sample[[i]] %*% t(beta1_sample[[i]])
-                         + prior_params[[4]] %*% prior_params[[3]]
+                         + solve(prior_params[[4]]) %*% prior_params[[3]]
                          + t(T_sample[[i]]) %*% solve(G_sample[[i]])%*% t(beta3_sample[[i]]))
     
     beta2_sample[[i+1]] <- mvtnorm::rmvnorm(n = 1, mean = mu_2, sigma = Sigma_2) 
@@ -212,7 +212,7 @@ R2_sampler <- function(X, Y1, Y2, initial_value, prior_params, sample_size){
     #beta3
     Sigma_3 <- solve(t(X) %*% solve(H3_sample[[i]]) %*% X + solve(prior_params[[6]]) + solve(G_sample[[i]]))
     mu_3 <- Sigma_3 %*% (t(X) %*% solve(H3_sample[[i]]) %*% Y3_sample[[i]] +
-                           + prior_params[[6]] %*% prior_params[[5]]
+                           + solve(prior_params[[6]]) %*% prior_params[[5]]
                          + solve(G_sample[[i]]) %*% T_sample[[i]] %*% t(beta2_sample[[i+1]]))
     
     beta3_sample[[i+1]] <- mvtnorm::rmvnorm(n = 1, mean = mu_3, sigma = Sigma_3)
@@ -227,10 +227,10 @@ R2_sampler <- function(X, Y1, Y2, initial_value, prior_params, sample_size){
                            beta2_sample[[i+1]][t]*beta3_sample[[i+1]][t]/G_sample[[i]][t,t])
       t_sample[t,t] <- rnorm(n = 1, mu_t, sigma_t) |> as.matrix()
     }
-    T_sample[[i+1]] <- t_sample
+    T_sample[[i+1]] <- diag(7)
     
     #G
-    v_G <- prior_params[[8]] + 3
+    v_G <- prior_params[[8]] + 2
     S_G <- prior_params[[9]] + (t(beta2_sample[[i+1]]) - T_sample[[i+1]] %*% t(beta1_sample[[i]]))%*%
       t(t(beta2_sample[[i+1]]) - T_sample[[i+1]] %*% t(beta1_sample[[i]])) + 
       (t(beta3_sample[[i+1]]) - T_sample[[i+1]] %*% t(beta2_sample[[i+1]]))%*%
@@ -336,7 +336,7 @@ R1_sampler <- function(X, Y1, initial_value, prior_params, sample_size){
                      + t(T_sample[[i]]) %*% solve(G_sample[[i]])%*% T_sample[[i]])
     mu_2 <- Sigma_2 %*% (t(X) %*% solve(H2_sample[[i]]) %*% Y2_sample[[i]] +
                            solve(G_sample[[i]]) %*% T_sample[[i]] %*% t(beta1_sample[[i]])
-                         + prior_params[[4]] %*% prior_params[[3]]
+                         + solve(prior_params[[4]]) %*% prior_params[[3]]
                          + t(T_sample[[i]]) %*% solve(G_sample[[i]])%*% t(beta3_sample[[i]]))
     
     beta2_sample[[i+1]] <- mvtnorm::rmvnorm(n = 1, mean = mu_2, sigma = Sigma_2) 
@@ -344,7 +344,7 @@ R1_sampler <- function(X, Y1, initial_value, prior_params, sample_size){
     #beta3
     Sigma_3 <- solve(t(X) %*% solve(H3_sample[[i]]) %*% X + solve(prior_params[[6]]) + solve(G_sample[[i]]))
     mu_3 <- Sigma_3 %*% (t(X) %*% solve(H3_sample[[i]]) %*% Y3_sample[[i]] +
-                           + prior_params[[6]] %*% prior_params[[5]]
+                           + solve(prior_params[[6]]) %*% prior_params[[5]]
                          + solve(G_sample[[i]]) %*% T_sample[[i]] %*% t(beta2_sample[[i+1]]))
     
     beta3_sample[[i+1]] <- mvtnorm::rmvnorm(n = 1, mean = mu_3, sigma = Sigma_3)
@@ -359,10 +359,10 @@ R1_sampler <- function(X, Y1, initial_value, prior_params, sample_size){
                            beta2_sample[[i+1]][t]*beta3_sample[[i+1]][t]/G_sample[[i]][t,t])
       t_sample[t,t] <- rnorm(n = 1, mu_t, sigma_t) |> as.matrix()
     }
-    T_sample[[i+1]] <- t_sample
+    T_sample[[i+1]] <- diag(7)
     
     #G
-    v_G <- prior_params[[8]] + 3
+    v_G <- prior_params[[8]] + 2
     S_G <- prior_params[[9]] + (t(beta2_sample[[i+1]]) - T_sample[[i+1]] %*% t(beta1_sample[[i]]))%*%
       t(t(beta2_sample[[i+1]]) - T_sample[[i+1]] %*% t(beta1_sample[[i]])) + 
       (t(beta3_sample[[i+1]]) - T_sample[[i+1]] %*% t(beta2_sample[[i+1]]))%*%
@@ -475,7 +475,7 @@ R0_sampler <- function(X, initial_value, prior_params, sample_size){
                      + t(T_sample[[i]]) %*% solve(G_sample[[i]])%*% T_sample[[i]])
     mu_2 <- Sigma_2 %*% (t(X) %*% solve(H2_sample[[i]]) %*% Y2_sample[[i]] +
                            solve(G_sample[[i]]) %*% T_sample[[i]] %*% t(beta1_sample[[i]])
-                         + prior_params[[4]] %*% prior_params[[3]]
+                         + solve(prior_params[[4]]) %*% prior_params[[3]]
                          + t(T_sample[[i]]) %*% solve(G_sample[[i]])%*% t(beta3_sample[[i]]))
     
     beta2_sample[[i+1]] <- mvtnorm::rmvnorm(n = 1, mean = mu_2, sigma = Sigma_2) 
@@ -483,7 +483,7 @@ R0_sampler <- function(X, initial_value, prior_params, sample_size){
     #beta3
     Sigma_3 <- solve(t(X) %*% solve(H3_sample[[i]]) %*% X + solve(prior_params[[6]]) + solve(G_sample[[i]]))
     mu_3 <- Sigma_3 %*% (t(X) %*% solve(H3_sample[[i]]) %*% Y3_sample[[i]] +
-                           + prior_params[[6]] %*% prior_params[[5]]
+                           + solve(prior_params[[6]]) %*% prior_params[[5]]
                          + solve(G_sample[[i]]) %*% T_sample[[i]] %*% t(beta2_sample[[i+1]]))
     
     beta3_sample[[i+1]] <- mvtnorm::rmvnorm(n = 1, mean = mu_3, sigma = Sigma_3)
@@ -498,10 +498,10 @@ R0_sampler <- function(X, initial_value, prior_params, sample_size){
                            beta2_sample[[i+1]][t]*beta3_sample[[i+1]][t]/G_sample[[i]][t,t])
       t_sample[t,t] <- rnorm(n = 1, mu_t, sigma_t) |> as.matrix()
     }
-    T_sample[[i+1]] <- t_sample
+    T_sample[[i+1]] <- diag(7)
     
     #G
-    v_G <- prior_params[[8]] + 3
+    v_G <- prior_params[[8]] + 2
     S_G <- prior_params[[9]] + (t(beta2_sample[[i+1]]) - T_sample[[i+1]] %*% t(beta1_sample[[i]]))%*%
       t(t(beta2_sample[[i+1]]) - T_sample[[i+1]] %*% t(beta1_sample[[i]])) + 
       (t(beta3_sample[[i+1]]) - T_sample[[i+1]] %*% t(beta2_sample[[i+1]]))%*%

@@ -38,7 +38,7 @@ get_R2_prior_parameter <- function(sample){
   sigma_t0 <- 100
   
   #G
-  v_G0 <- 7+2
+  v_G0 <- 7
   S_G0 <- 0.1*diag(7)
   
   #H1 H2 
@@ -54,16 +54,16 @@ get_R2_prior_parameter <- function(sample){
 
 get_R1_prior_parameter <- function(R2_sample, R3_sample){
   #beta2
-  n <- length(R2_sample$beta2)
-  mu_20 <- R2_sample$beta2[[1]]/n
+  n <- length(R3_sample$beta2)
+  mu_20 <- R3_sample$beta2[[1]]/n
   for (i in 2:n){
-    add <- R2_sample$beta2[[i]] / n
+    add <- R3_sample$beta2[[i]] / n
     mu_20 <- mu_20 + add
   }
   
-  Sigma_20 <- t(R2_sample$beta2[[1]] - mu_20)  %*% (R2_sample$beta2[[1]] - mu_20) / n
+  Sigma_20 <- t(R3_sample$beta2[[1]] - mu_20)  %*% (R3_sample$beta2[[1]] - mu_20) / n
   for (i in 2:n){
-    add <- t(R2_sample$beta2[[i]] - mu_20)  %*% (R2_sample$beta2[[i]] - mu_20) / n
+    add <- t(R3_sample$beta2[[i]] - mu_20)  %*% (R3_sample$beta2[[i]] - mu_20) / n
     Sigma_20 <- Sigma_20 + add
   }
   
@@ -82,9 +82,9 @@ get_R1_prior_parameter <- function(R2_sample, R3_sample){
   }
   
   #H2
-  H2_sample <- c(1/R2_sample$H2[[1]][1,1])
+  H2_sample <- c(1/R3_sample$H2[[1]][1,1])
   for (i in 2:n){
-    add <- c(1/R2_sample$H2[[i]][1,1])
+    add <- c(1/R3_sample$H2[[i]][1,1])
     H2_sample <- c(H2_sample, add)
   }
   H2_params <- MASS::fitdistr(H2_sample, "gamma")
@@ -110,7 +110,7 @@ get_R1_prior_parameter <- function(R2_sample, R3_sample){
   sigma_t0 <- 100
   
   #G
-  v_G0 <- 7+2
+  v_G0 <- 7
   S_G0 <- 0.1*diag(7)
   
   #H1 
@@ -126,29 +126,29 @@ get_R1_prior_parameter <- function(R2_sample, R3_sample){
 
 get_R0_prior_parameter <- function(R1_sample, R2_sample, R3_sample){
   #beta1
-  n <- length(R1_sample$beta1)
-  mu_10 <- R1_sample$beta1[[1]]/n
+  n <- length(R3_sample$beta1)
+  mu_10 <- R3_sample$beta1[[1]]/n
   for (i in 2:n){
-    add <- R1_sample$beta1[[i]] / n
+    add <- R3_sample$beta1[[i]] / n
     mu_10 <- mu_10 + add
   }
   
-  Sigma_10 <- t(R1_sample$beta1[[1]] - mu_10)  %*% (R1_sample$beta1[[1]] - mu_10) / n
+  Sigma_10 <- t(R3_sample$beta1[[1]] - mu_10)  %*% (R3_sample$beta1[[1]] - mu_10) / n
   for (i in 2:n){
-    add <- t(R1_sample$beta1[[i]] - mu_10)  %*% (R1_sample$beta1[[i]] - mu_10) / n
+    add <- t(R3_sample$beta1[[i]] - mu_10)  %*% (R3_sample$beta1[[i]] - mu_10) / n
     Sigma_10 <- Sigma_10 + add
   }
   
   #beta2
   n <- length(R2_sample$beta2)
-  mu_20 <- R2_sample$beta2[[1]]/n
+  mu_20 <- R3_sample$beta2[[1]]/n
   for (i in 2:n){
-    add <- R2_sample$beta2[[i]] / n
+    add <- R3_sample$beta2[[i]] / n
     mu_20 <- mu_20 + add
   }
-  Sigma_20 <- t(R2_sample$beta2[[1]] - mu_20)  %*% (R2_sample$beta2[[1]] - mu_20) / n
+  Sigma_20 <- t(R3_sample$beta2[[1]] - mu_20)  %*% (R3_sample$beta2[[1]] - mu_20) / n
   for (i in 2:n){
-    add <- t(R2_sample$beta2[[i]] - mu_20)  %*% (R2_sample$beta2[[i]] - mu_20) / n
+    add <- t(R3_sample$beta2[[i]] - mu_20)  %*% (R3_sample$beta2[[i]] - mu_20) / n
     Sigma_20 <- Sigma_20 + add
   }
   
@@ -167,9 +167,9 @@ get_R0_prior_parameter <- function(R1_sample, R2_sample, R3_sample){
   }
   
   #H1
-  H1_sample <- c(1/R1_sample$H1[[1]][1,1])
+  H1_sample <- c(1/R3_sample$H1[[1]][1,1])
   for (i in 2:n){
-    add <- c(1/R1_sample$H1[[i]][1,1])
+    add <- c(1/R3_sample$H1[[i]][1,1])
     H1_sample <- c(H1_sample, add)
   }
   H1_params <- MASS::fitdistr(H1_sample, "gamma")
@@ -177,9 +177,9 @@ get_R0_prior_parameter <- function(R1_sample, R2_sample, R3_sample){
   sigma_H10 <- H1_params$estimate[2]
   
   #H2
-  H2_sample <- c(1/R2_sample$H2[[1]][1,1])
+  H2_sample <- c(1/R3_sample$H2[[1]][1,1])
   for (i in 2:n){
-    add <- c(1/R2_sample$H2[[i]][1,1])
+    add <- c(1/R3_sample$H2[[i]][1,1])
     H2_sample <- c(H2_sample, add)
   }
   H2_params <- MASS::fitdistr(H2_sample, "gamma")
@@ -201,7 +201,7 @@ get_R0_prior_parameter <- function(R1_sample, R2_sample, R3_sample){
   sigma_t0 <- 100
   
   #G
-  v_G0 <- 7+2
+  v_G0 <- 7
   S_G0 <- 0.1*diag(7)
   
   output <- list(t(mu_10), Sigma_10, t(mu_20), Sigma_20, t(mu_30), Sigma_30, sigma_t0,

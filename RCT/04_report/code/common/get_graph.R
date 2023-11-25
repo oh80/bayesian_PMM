@@ -2,9 +2,9 @@ get_graph <- function(){
   library(ggplot2)
   
   #read missing 
-  missing_type <- "NMAR"
-  restriction <- "ACMV"
-  delta <- -5
+  missing_type <- "MCAR"
+  restriction <- "NCMV"
+  delta <- 5
   
   #get graph
   estimated_values <- read_results(missing_type, restriction, delta) 
@@ -61,7 +61,7 @@ get_plot <- function(treatment_effects, missing_type, delta){
           plot.title = element_text(vjust = -2, hjust = 0, size = 17),
           plot.subtitle = element_text(vjust = -30, hjust = 2.2, size = 11))+
     scale_x_continuous(breaks = seq(0, 4, by = 1)) +
-    scale_y_continuous(breaks = seq(-2, 10, by = 1), limits=c(-2,10)) +
+    scale_y_continuous(breaks = seq(-3, 11, by = 1), limits=c(-3,11)) +
     labs(title = missing_type, 
          subtitle = paste0("delta = ", delta)) +
     ylab("Treatment effect")+
