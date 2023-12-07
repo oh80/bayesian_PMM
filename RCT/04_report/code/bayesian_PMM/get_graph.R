@@ -13,7 +13,7 @@ get_graph <- function(){
   
   #save plot
   file_name <- paste0(missing_type,".pdf")
-  path <- here::here("RCT", "04_report","output", file_name)
+  path <- here::here("RCT", "04_report","output", "bayesian_PMM",file_name)
   ggsave(filename = path, plot = plot, device = "pdf",width = 3, height = 5)
   
   return(plot)

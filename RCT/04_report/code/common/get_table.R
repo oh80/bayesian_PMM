@@ -7,7 +7,6 @@ main <- function(){
 
   
   #get table
-  results <- read_results(missing_rate) 
   table <- results |> get_data_frame() |> get_table()
   
   #save table as text
