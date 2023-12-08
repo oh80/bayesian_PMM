@@ -1,6 +1,6 @@
 main <- function(){
   #set params
-  missing_rate <- 0.25
+  missing_rate <- 0.1
   
   #read results
   results <- read_results(missing_rate)
@@ -76,3 +76,5 @@ save <- function(table, missing_rate){
 
 
 main()
+
+
