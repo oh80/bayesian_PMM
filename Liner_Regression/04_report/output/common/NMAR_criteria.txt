@@ -1,0 +1,14 @@
+
+\begin{tabular}{lllll}
+\toprule
+method & rate & log\_likelihood & AIC & BIC\\
+\midrule
+proposed & 0.1 & -1505 & 3230 & 3770\\
+ & 0.25 & -1517 & 3254 & 3794\\
+ & 0.5 & -1786 & 3791 & 4331\\
+CCMV & 0.1 & -5933 & 12086 & 12626\\
+ & 0.25 & -14897 & 30013 & 30553\\
+\addlinespace
+ & 0.5 & -37809 & 75838 & 76378\\
+\bottomrule
+\end{tabular}
